@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 
 function LoanCalculator() {
@@ -10,40 +9,42 @@ function LoanCalculator() {
   const [totalPrincipalAndInterest, setTotalPrincipalAndInterest] = useState(0);
 
   useEffect(() => {
+    const calculateLoan = () => {
+      const principal = parseFloat(loanAmount.replace(/,/g, "")) || 0;
+
+      const rate =
+        parseFloat(annualInterestRate.replace(/,/g, "")) / 100 / 12 || 0;
+
+      const term = parseInt(loanTermInMonths.replace(/,/g, "")) || 0;
+
+      if (principal === 0 || rate === 0 || term === 0) {
+        setMonthlyPayment(0);
+        setTotalInterest(0);
+        setTotalPrincipalAndInterest(0);
+      } else {
+        const monthlyPayment =
+          (principal * rate) / (1 - Math.pow(1 + rate, -term));
+
+        const totalInterest = monthlyPayment * term - principal;
+
+        setMonthlyPayment(
+          monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        );
+
+        setTotalInterest(
+          totalInterest.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        );
+
+        setTotalPrincipalAndInterest(
+          (principal + totalInterest)
+            .toFixed(2)
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        );
+      }
+    };
+
     calculateLoan();
   }, [loanAmount, annualInterestRate, loanTermInMonths]);
-
-  const calculateLoan = () => {
-    const principal = parseFloat(loanAmount.replace(/,/g, "")) || 0;
-
-    const rate =
-      parseFloat(annualInterestRate.replace(/,/g, "")) / 100 / 12 || 0;
-
-    const term = parseInt(loanTermInMonths.replace(/,/g, "")) || 0;
-
-    if (principal === 0 || rate === 0 || term === 0) {
-      setMonthlyPayment(0);
-      setTotalInterest(0);
-      setTotalPrincipalAndInterest(0);
-    } else {
-      const monthlyPayment =
-        (principal * rate) / (1 - Math.pow(1 + rate, -term));
-
-      const totalInterest = monthlyPayment * term - principal;
-
-      setMonthlyPayment(
-        monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      );
-      setTotalInterest(
-        totalInterest.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      );
-      setTotalPrincipalAndInterest(
-        (principal + totalInterest)
-          .toFixed(2)
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      );
-    }
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
