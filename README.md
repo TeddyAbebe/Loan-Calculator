@@ -7,5 +7,3 @@
 - Calculate monthly payments for a loan based on the loan amount, interest rate, and loan term.
 
 - Display total interest and total principal and interest for the loan.
-
-- Customize the appearance and styling of the loan calculator to match your WordPress theme.
